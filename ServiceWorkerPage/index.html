@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Notification using Node</title>
+</head>
+<body>
+    <h1>Push Notification ServiceWorker</h1>
+    Enter Your Vapid Public Key:
+    <textarea onchange="saveVapidKey()" type="text" id="pubVapidKey" style="width:100%; height:50px; resize:none;">BA0A-i8Dhl0zTEeK06N4xhJcsZ-bdWSfSk1MQDHPHL-pHCYMYQXTath96NvpB-YRjG01dPT8DZrBrX-v9FR_75I</textarea>
+    <br><br>
+    <button onclick="registerSubscription()">register</button>
+    <button onclick="unregisterSubscription()">unregister</button>
+    <br><br>
+    This is your subscription endpoint for this device
+    <textarea disabled id="subscription" style="width:100%;height:100px;resize:none;"></textarea>
+
+    <script src="urlBase64ToUint8Array.js"></script>
+
+    <script>
+        let serviceWorker
+
+        (async()=>{
+            updateVapidKey()
+            
+            serviceWorker = await navigator.serviceWorker.register('/sw.js', {
+                scope: '/'
+            });
+            updateSubscription()
+        })()
+
+        async function registerSubscription(){
+            try {
+                const key = urlBase64ToUint8Array(document.getElementById("pubVapidKey").value)
+                await serviceWorker.pushManager.subscribe({userVisibleOnly: true, applicationServerKey:key})
+                updateSubscription()
+            }
+            catch (ex) {
+                window.alert(ex.message)
+            }
+        }
+        async function unregisterSubscription(){
+            pushSubscription = await serviceWorker.pushManager.getSubscription()
+            if (pushSubscription)
+                await pushSubscription.unsubscribe();
+            updateSubscription();
+        }
+
+        function saveVapidKey(){
+            localStorage.setItem("vapidKey",document.getElementById("pubVapidKey").value)
+        }
+
+        function updateVapidKey(){
+            let vapidKey = localStorage.getItem("vapidKey")
+            if (vapidKey)
+                document.getElementById("pubVapidKey").value = vapidKey
+            else
+                document.getElementById("pubVapidKey").value = "Enter your key here, example:\nBIhoYvV2kCDKBKHz5Huq9xfGqzjVFEbP10QYLb5hqDQ_tphIBNqNB1HrGLI1__tAbZ_UF_zfzrV_tvCrNffl2FQ"
+        }
+
+        async function updateSubscription(){
+            pushSubscription = await serviceWorker.pushManager.getSubscription()
+            console.log(JSON.stringify(pushSubscription))
+            
+            if (pushSubscription)
+                document.getElementById("subscription").innerText = JSON.stringify(pushSubscription)
+            else
+                document.getElementById("subscription").innerText = "Not registered yet"
+        }
+
+    </script>
+
+
+    <div id="content"></div>    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+		fetch("docu.md")
+		.then(res => res.text())
+		.then(res => {
+		    document.getElementById('content').innerHTML = marked.parse(res);
+		})
+      </script>
+</body>
+</html>
