@@ -25,7 +25,7 @@
         (async()=>{
             updateVapidKey()
             
-            serviceWorker = await navigator.serviceWorker.register(window.location.origin+window.location.pathname+'/sw.js', {
+            serviceWorker = await navigator.serviceWorker.register(window.location.origin+window.location.pathname+'sw.js', {
                 scope: window.location.pathname
             });
             updateSubscription()
