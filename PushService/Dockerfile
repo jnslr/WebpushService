@@ -5,7 +5,7 @@ LABEL version="1.0"
 LABEL description="This text illustrates"
 
 
-VOLUME [/config]
+VOLUME /config
 EXPOSE 1883
 
 WORKDIR /usr/src/app
