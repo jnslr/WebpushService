@@ -4,7 +4,7 @@ exports.notificationSchema = {
     title: {
       type: "string"
     },
-    data: {
+    options: {
       type: "object",
       properties: {
         body: {type: "string"},

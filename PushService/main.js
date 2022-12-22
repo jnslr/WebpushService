@@ -109,7 +109,7 @@ async function sendPush(message){
         const obj = await JSON.parse(msg)
         const valid = notificationValidator(obj)
         if (!valid)
-            throw new Error(`Json validation errors: ${JSON.stringify(validate.errors)}`)
+            throw new Error(`Json validation errors: ${betterAjvErrors(schemas.notificationSchema, obj, notificationValidator.errors,{indent:2})}`)
         for (const sub of config.subscriptions) {
             try{
                 await webpush.sendNotification(sub, message)
