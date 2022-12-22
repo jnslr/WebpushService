@@ -43,9 +43,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          # set latest tag for default branch
-          type=raw,value=latest,enable={{is_default_branch}}
+          tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
       
       - name: Set up QEMU dependency
         uses: docker/setup-qemu-action@v2
