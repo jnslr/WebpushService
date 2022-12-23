@@ -1,4 +1,4 @@
-FROM node:19-alpine
+FROM node:slim
 
 CMD ["/bin/sh"]
 LABEL version="1.0"
